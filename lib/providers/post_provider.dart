@@ -16,7 +16,10 @@ class PostProvider extends ChangeNotifier {
 
   Future<void> authReddit() async {
     await redditApi.login();
-    if (authorized) posts = await redditApi.loadPosts(count: 20);
+    if (authorized)
+      posts = await redditApi.loadPosts(
+        count: 20,
+      );
     notifyListeners();
   }
 
@@ -24,8 +27,23 @@ class PostProvider extends ChangeNotifier {
     print(('#' * 80 + '\n') * 3);
     // if (authorized)
     final submissions = await redditApi.loadPosts(
-      count: 4,
-      // after: posts.isNotEmpty ? posts.last.id : null,
+      count: 20,
+      after: posts.isNotEmpty ? posts.first.id : null,
+      // before: posts.isNotEmpty ? posts.last.id : null,
+    );
+    print(submissions);
+    posts.addAll(submissions);
+    // posts.addAll(submissions);
+    notifyListeners();
+  }
+
+  Future<void> loadOlder() async {
+    print(('#' * 80 + '\n') * 3);
+    // if (authorized)
+    final submissions = await redditApi.loadPosts(
+      count: 20,
+      before: posts.isNotEmpty ? posts.last.id : null,
+      // before: posts.isNotEmpty ? posts.last.id : null,
     );
     print(submissions);
     posts.addAll(submissions);

@@ -16,6 +16,7 @@ class RedditApi {
   Reddit reddit;
   Uri authUri;
   String username;
+  bool loading;
   bool get authorized => reddit.auth.credentials != null && reddit.auth.isValid;
 
   RedditApi() {
@@ -76,21 +77,22 @@ class RedditApi {
       {int count: 10, String before, String after}) async {
     print('loading posts');
     List<Submission> submissions = [];
-    await for (var value in reddit.front.best(limit: min(count, 100), params: {
+    print('after: $after');
+    print('before: $before');
+    var ts = DateTime.now();
+    await for (var value in reddit.front.newest(params: {
       if (after != null) 'after': after,
       if (before != null) 'before': before
     })) {
-      print(value.infoPath);
-      print(value.infoParams);
       if (value is Submission) {
-        if (!value.isSelf) continue;
+        // if (!value.isSelf) continue;
         print('submission ' + '#' * 42);
-        print('ID: ${value.id}');
-        print(value.body);
+        print('ID: ${value.fullname}');
+        // print(value.body);
         print('URL: ${value.url}');
-        print('short: ${value.shortlink}');
-        print('short: https://redd.it/' + value.id);
-        print('#' * 42);
+        // print('short: ${value.shortlink}');
+        // print('short: https://redd.it/' + value.id);
+        // print('#' * 42);
         String filepath = value.url.toString().split('/').last;
         if (filepath.endsWith('.jpg') ||
             filepath.endsWith('.png') ||
@@ -99,12 +101,13 @@ class RedditApi {
 
           if (submissions.length > count) break;
         }
+        if (DateTime.now().difference(ts) > const Duration(seconds: 3)) break;
       }
     }
-
+    loading = false;
     return submissions
         .map((e) => Post(
-              id: e.id,
+              id: e.fullname,
               thumbnail: e.thumbnail.toString(),
               image: e.url.toString(),
               link: 'https://redd.it/' + e.id,

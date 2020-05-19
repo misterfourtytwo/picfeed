@@ -38,13 +38,17 @@ class _GalleryScreenState extends State<GalleryScreen> {
               builder: (context, p, _) => p.authorized
                   ? Column(
                       children: [
-                        GFButton(
-                          onPressed: () {
-                            p.loadUpdates();
-                          },
-                          fullWidthButton: true,
-                          text: 'Update',
-                          color: Colors.red,
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: GFButton(
+                            onPressed: () {
+                              p.loadUpdates();
+                            },
+                            fullWidthButton: true,
+                            text: 'Update',
+                            size: GFSize.LARGE,
+                            color: Colors.red,
+                          ),
                         ),
                         if (p.isNotEmpty)
                           Expanded(
@@ -71,12 +75,23 @@ class _GalleryScreenState extends State<GalleryScreen> {
                                 ),
                               ),
                             ),
-                          )
+                          ),
+                        Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: GFButton(
+                              onPressed: () {
+                                p.loadOlder();
+                              },
+                              fullWidthButton: true,
+                              text: 'Load more',
+                              size: GFSize.LARGE,
+                              color: Colors.red,
+                            )),
                       ],
                     )
                   : Center(
                       child: Text(
-                        'Please login in reddit',
+                        'Please login into reddit',
                         style: Theme.of(context).textTheme.headline4.copyWith(
                               color: Colors.white,
                             ),
