@@ -1,4 +1,4 @@
-package com.example.picfeed
+package com.misterfourtytwo.picfeed
 
 import io.flutter.embedding.android.FlutterActivity
 

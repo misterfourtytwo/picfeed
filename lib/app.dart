@@ -1,65 +1,40 @@
 import 'package:flutter/material.dart';
+import 'package:picfeed/models/post.dart';
+import 'package:picfeed/providers/post_provider.dart';
+import 'package:picfeed/routes/auth.dart';
+import 'package:picfeed/routes/gallery.dart';
+import 'package:picfeed/routes/post.dart';
+import 'package:provider/provider.dart';
 
 class App extends StatelessWidget {
   const App({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'picfeed',
-      home: LoginPage(),
-    );
-  }
-}
-
-class LoginPage extends StatefulWidget {
-  LoginPage({Key key}) : super(key: key);
-
-  @override
-  _LoginPageState createState() => _LoginPageState();
-}
-
-class _LoginPageState extends State<LoginPage> {
-  String login;
-  String password;
-
-  final _formKey = GlobalKey<FormState>();
-
-  @override
-  void initState() {
-    super.initState();
-    login = '';
-    password = '';
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Form(
-        key: _formKey,
-        child: Column(children: [
-          TextFormField(
-            initialValue: login,
-            onChanged: (newValue) => login = newValue,
-          ),
-          TextFormField(
-            initialValue: password,
-            onChanged: (newValue) => password = newValue,
-          ),
-          FlatButton(
-            onPressed: () {
-              if (_formKey.currentState.validate()) {
-                print('logging in');
-              } else
-                print('invalid input');
-            },
-            child: Container(
-                padding: EdgeInsets.all(16),
-                margin: EdgeInsets.all(16),
-                color: Colors.blue,
-                child: Text('Login')),
-          )
-        ]),
+    return ChangeNotifierProvider<PostProvider>(
+      create: (ctx) => PostProvider(),
+      child: MaterialApp(
+        theme: ThemeData(
+          scaffoldBackgroundColor: Colors.black,
+          primaryColor: Colors.grey[900],
+          // backgroundColor: Colors.black
+          // accentColor: Colors.teal,
+          // highlightColor: Colors.green,
+        ),
+        title: 'picfeed',
+        initialRoute: '/gallery',
+        routes: {
+          '/auth': (context) => AuthScreen(),
+          '/gallery': (context) {
+            // var a = ModalRoute.of(context).settings.arguments;
+            // if (a is Map<String, String>) {
+            return GalleryScreen();
+          },
+          '/post': (context) {
+            Post post = ModalRoute.of(context).settings.arguments;
+            return PostScreen(post: post);
+          }
+        },
       ),
     );
   }
